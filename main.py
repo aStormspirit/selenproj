@@ -24,38 +24,37 @@ class Bot:
         self.driver.get(self.url)
         time.sleep(30)
 
-    def parse(self):
-        f = open('users.txt', 'w')
+     def parse(self):
+        f = open('users.txt', 'a')
         self.driver.implicitly_wait(10)
         info = self.driver.find_element(By.CSS_SELECTOR, ".chat-info")
         info.click()
         self.driver.implicitly_wait(5)
         users = self.driver.find_element(By.CLASS_NAME, 'search-super-content-members')
-        for i in range(5):
+        for i in range(10):
+            flag = False
             users.find_elements(By.CLASS_NAME, 'chatlist-chat')[i].click()
             tab = self.driver.window_handles
             link = self.driver.current_url
+
+            for user in open('users.txt'):
+                print(user, link)
+                if(user.strip() == link.strip()):
+                    flag = True
+                    break
+
+            print(flag)
+
+            if(flag):
+                self.driver.back()
+                continue
+            
             print(link, tab)
             time.sleep(5)
-            self.driver.switch_to.new_window('tab')
-            print('windows-open')
-            time.sleep(5)
-            print('switch to new windows')
-            time.sleep(5)
-            self.driver.get(link)
-            print('get link')
-            time.sleep(5)
-            self.driver.execute_script("document.querySelector('.input-message-input').innerText = 123")
-            print('inner text')
-            time.sleep(5)
-            self.driver.implicitly_wait(3)
-            time.sleep(5)
-            self.driver.execute_script("document.querySelector('.btn-send').click()")
-            print('click to send')
-            time.sleep(5)
+            #send script
             f.write(self.driver.current_url + '\n')
-            self.driver.close()
-            self.driver.switch_to.window(tab[0])
+            #self.driver.close()
+            #self.driver.switch_to.window(tab[0])
             self.driver.back()
 
             time.sleep(3)
