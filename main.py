@@ -18,13 +18,14 @@ class Bot:
             }
         }
         self.url = url
-        self.driver = webdriver.Remote(command_executor=f'http://{host}:4444/wd/hub', desired_capabilities=capabilities)
+        self.driver = webdriver.Firefox()
 
     def start_browser(self):
         self.driver.get(self.url)
         time.sleep(30)
 
-     def parse(self):
+    
+    def parse(self):
         f = open('users.txt', 'a')
         self.driver.implicitly_wait(10)
         info = self.driver.find_element(By.CSS_SELECTOR, ".chat-info")
@@ -52,6 +53,14 @@ class Bot:
             print(link, tab)
             time.sleep(5)
             #send script
+            self.driver.switch_to.new_window('tab')
+            self.driver.get(link)
+            #self.driver.get(line)
+            time.sleep(3)
+            self.driver.execute_script("document.querySelector('.input-message-input').innerText = 'Добрый день !Меня Илья зовут. Если я правильно понял, вы seo продвижением занимаетесь.Хочу обсудить вариант поработать вместе.Мы платформу запустили по поведенческим 2 года назад, используем региональные IP адреса, подстраиваемся под позицию сайта (чтобы не заходить, если Яндекс на проверку выбрасывает на 6 страницу), у всех пользователей нагуленная история (вплоть до тематик интересов).По нашей практике, сайты по 10 ключевикам за 2 месяца в топ-10 спокойно можно вывести (если это только не суперконкурентная тематика). Хочу пригласить вас на такую небольшую встречу (минут 10) в зуме или телеграмме, покажем платформу, может вам было бы интересно со своими клиентами в работе использовать. Что скажете, найдётся минут 10?' ")
+            self.driver.implicitly_wait(3)
+            #self.driver.execute_script("document.querySelector('.btn-send').click()")
+            time.sleep(3)
             f.write(self.driver.current_url + '\n')
             #self.driver.close()
             #self.driver.switch_to.window(tab[0])
