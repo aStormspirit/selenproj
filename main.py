@@ -1,7 +1,5 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
 
 import time
 import datetime
@@ -13,15 +11,6 @@ db.create_db()
 class Bot:
 
     def __init__(self, url):
-        host = '62.113.106.227'
-        capabilities = {
-            "browserName": "firefox",
-            "browserVersion": "101.0",
-            "selenoid:options": {
-            "enableVNC": True,
-            "enableVideo": False
-            }
-        }
         self.url = url
         self.driver = webdriver.Firefox()
 
@@ -37,7 +26,7 @@ class Bot:
         time.sleep(2)
         print('сообщение')
         self.driver.implicitly_wait(3)
-        #self.driver.execute_script("document.querySelector('.btn-send').click()")
+        self.driver.execute_script("document.querySelector('.btn-send').click()")
         time.sleep(2)
         db.add_user(link, datetime.datetime.now())
         time.sleep(1)
@@ -76,4 +65,3 @@ class Bot:
 st = Bot('https://web.telegram.org/k/#@webpack_ru')
 st.start_browser()
 st.parse()
-#st.send_text()

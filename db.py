@@ -59,12 +59,3 @@ class Database():
                 print("sqlite connection is closed")
         
         return users
-
-
-
-    
-
-db = Database()
-#print(db.show_users())
-db.create_db()
-#db.add_user('ffs', datetime.datetime.now())
