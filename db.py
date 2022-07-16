@@ -1,4 +1,5 @@
 import sqlite3
+import datetime
 
 class Database():
     def __init__(self):
@@ -8,11 +9,12 @@ class Database():
         try:
             sqliteConnection = sqlite3.connect(self.name)
             cursor = sqliteConnection.cursor()
-            sqlite_create_table_query = '''CREATE TABLE users (
+            sqlite_create_users_query = '''CREATE TABLE IF NOT EXISTS users (
                                        id INTEGER PRIMARY KEY,
                                        link TEXT NOT NULL,
+                                       groupName TEXT NOT NULL,
                                        joiningDate timestamp);'''
-            cursor.execute(sqlite_create_table_query)
+            cursor.execute(sqlite_create_users_query)
             sqliteConnection.commit()
             print("База данных создана и успешно подключена к SQLite")
             cursor.close()   
@@ -23,14 +25,14 @@ class Database():
                 sqliteConnection.close()
                 print("sqlite connection is closed")
 
-    def add_user(self, link, date):
+    def add_user(self, link, date, groupId):
         try: 
             sqliteConnection = sqlite3.connect(self.name)
             cursor = sqliteConnection.cursor()
             sqlite_insert_with_param = """INSERT INTO 'users'
-                          ('link', 'joiningDate') 
-                          VALUES (?, ?);"""
-            data_tuple = (link, date)
+                          ('link','groupName','joiningDate') 
+                          VALUES (?, ?, ?);"""
+            data_tuple = (link, date, groupId)
             cursor.execute(sqlite_insert_with_param, data_tuple)
             sqliteConnection.commit()
             cursor.close()
@@ -40,6 +42,7 @@ class Database():
             if sqliteConnection:
                 sqliteConnection.close()
                 print("sqlite connection is closed")
+
 
     def show_users(self):
         users = []
