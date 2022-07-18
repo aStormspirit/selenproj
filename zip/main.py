@@ -1,19 +1,6 @@
-import logging
-## for file logging
-logger = logging.getLogger('spam_application')
-file_log = logging.FileHandler('Log.log')
-console_out = logging.StreamHandler()
-
-logging.basicConfig(handlers=(file_log, console_out), 
-                    format='[%(asctime)s | %(levelname)s]: %(message)s', 
-                    datefmt='%m.%d.%Y %H:%M:%S',
-                    level=logging.INFO)
-
-
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
-import logging
 
 import time
 import datetime
@@ -22,13 +9,15 @@ from db import Database
 db = Database()
 db.create_db()
 
+
+
 class Bot:
 
     def __init__(self, url):
         self.url = url
         self.users = 10
         self.per_user = 2
-        self.min = 0
+        self.min = 1
         self.driver = webdriver.Firefox()
 
     def start_browser(self):
@@ -38,18 +27,18 @@ class Bot:
     def send(self, link, tab):
         self.driver.switch_to.new_window('tab')
         self.driver.get(link)
-        time.sleep(3)
-        self.driver.execute_script("document.querySelector('.input-message-input').innerText = 'привет'")
-        time.sleep(3)
-        logger.info("Отправка сообщения")
-        self.driver.implicitly_wait(3)
-        #self.driver.execute_script("document.querySelector('.btn-send').click()")
-        time.sleep(3)
-        db.add_user(link, self.url, datetime.datetime.now())
         time.sleep(2)
+        self.driver.execute_script("document.querySelector('.input-message-input').innerText = 'привет'")
+        time.sleep(2)
+        print('сообщение')
+        self.driver.implicitly_wait(3)
+        self.driver.execute_script("document.querySelector('.btn-send').click()")
+        time.sleep(2)
+        db.add_user(link, self.url, datetime.datetime.now())
+        time.sleep(1)
         self.driver.close()
         self.driver.switch_to.window(tab[0])
-        time.sleep(3)
+        time.sleep(2)
         self.driver.back()
     
     def parse(self):
@@ -61,31 +50,27 @@ class Bot:
         for i in range(self.users):
 
             if(i % self.per_user):
-                logger.info("Пауза")
                 time.sleep(self.min*60)
 
             users.find_elements(By.CLASS_NAME, 'chatlist-chat')[i].click()
-            time.sleep(2)
+
             tab = self.driver.window_handles
             link = self.driver.current_url
             time.sleep(2)
             if link in db.show_users():
-                logger.info(link)
-                logger.info("Пользователь есть в базе")
+                print('пользователь есть в базе')
                 time.sleep(2)
                 self.driver.back()
                 continue
 
-            time.sleep(3)
-            logger.info("Пользователь нету базе")
+            print(link, tab)
+            time.sleep(2)
+            print('пользователя нету в базе')
             self.send(link, tab)
-            time.sleep(3)
+            time.sleep(2)
             
 
-def main():
-    st = Bot('https://web.telegram.org/k/#@webpack_ru')
-    st.start_browser()
-    st.parse()
 
-if __name__ == '__main__':
-    main()
+st = Bot('https://web.telegram.org/k/#@ton_raffles_chat')
+st.start_browser()
+st.parse()

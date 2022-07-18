@@ -1,6 +1,5 @@
 import sqlite3
 import datetime
-import logging
 
 class Database():
     def __init__(self):
@@ -17,14 +16,14 @@ class Database():
                                        joiningDate timestamp);'''
             cursor.execute(sqlite_create_users_query)
             sqliteConnection.commit()
-            logging.info("База данных создана и успешно подключена к SQLite")
+            print("База данных создана и успешно подключена к SQLite")
             cursor.close()   
         except sqlite3.Error as error:
-            logging.error("Error while working with SQLite", error)
+            print("Error while working with SQLite", error)
         finally:
             if sqliteConnection:
                 sqliteConnection.close()
-                logging.info("sqlite connection is closed")
+                print("sqlite connection is closed")
 
     def add_user(self, link, groupName, date):
         try: 
@@ -38,11 +37,11 @@ class Database():
             sqliteConnection.commit()
             cursor.close()
         except sqlite3.Error as error:
-            logging.error("Error while working with SQLite", error)
+            print("Error while working with SQLite", error)
         finally:
             if sqliteConnection:
                 sqliteConnection.close()
-                logging.info("sqlite connection is closed")
+                print("sqlite connection is closed")
 
 
     def show_users(self):
@@ -54,13 +53,12 @@ class Database():
             cursor.execute('select link from users')
             records = cursor.fetchall()
             users = [i[0] for i in records]
-            logging.info(str(users))
             cursor.close()
         except sqlite3.Error as error:
-            logging.error("Error while working with SQLite", error)
+            print("Error while working with SQLite", error)
         finally:
             if sqliteConnection:
                 sqliteConnection.close()
-                logging.info("sqlite connection is closed")
+                print("sqlite connection is closed")
         
         return users
