@@ -1,2 +1,5 @@
-/trash
-/__pycache__
+./trash
+geckodriver.log
+SQlite_telegramm.db
+Log.log
+./__pycache__
