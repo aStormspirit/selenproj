@@ -20,7 +20,6 @@ import datetime
 from db import Database
 
 db = Database()
-db.create_db()
 
 class Bot:
 
@@ -36,11 +35,15 @@ class Bot:
         time.sleep(30)
 
     def send(self, link, tab):
+        #if(i % self.per_user):
+        #    logger.info("Пауза")
+        #    time.sleep(self.min*60)
         self.driver.switch_to.new_window('tab')
         self.driver.get(link)
         time.sleep(3)
         self.driver.execute_script("document.querySelector('.input-message-input').innerText = 'привет'")
         time.sleep(3)
+        logger.info(str(self.driver.current_url))
         logger.info("Отправка сообщения")
         self.driver.implicitly_wait(3)
         #self.driver.execute_script("document.querySelector('.btn-send').click()")
@@ -58,31 +61,35 @@ class Bot:
         info.click()
         self.driver.implicitly_wait(5)
         users = self.driver.find_element(By.CLASS_NAME, 'search-super-content-members')
+
         for i in range(self.users):
 
-            if(i % self.per_user):
-                logger.info("Пауза")
-                time.sleep(self.min*60)
-
             users.find_elements(By.CLASS_NAME, 'chatlist-chat')[i].click()
-            time.sleep(2)
-            tab = self.driver.window_handles
+            time.sleep(5)
             link = self.driver.current_url
-            time.sleep(2)
-            if link in db.show_users():
-                logger.info(link)
-                logger.info("Пользователь есть в базе")
-                time.sleep(2)
-                self.driver.back()
-                continue
+            db.add_user(link, self.url, datetime.datetime.now())
+            self.driver.back()
+            time.sleep(5)
 
-            time.sleep(3)
-            logger.info("Пользователь нету базе")
-            self.send(link, tab)
-            time.sleep(3)
+            #tab = self.driver.window_handles
+            
+
+            #time.sleep(5)
+            #if link in db.show_users():
+                #logger.info(link)
+                #logger.info("Пользователь есть в базе")
+                #time.sleep(2)
+                #self.driver.back()
+                #continue
+
+            #time.sleep(3)
+            #logger.info("Пользователь нету базе")
+            #self.send(link, tab)
+            #time.sleep(3)
             
 
 def main():
+    db.create_db()
     st = Bot('https://web.telegram.org/k/#@webpack_ru')
     st.start_browser()
     st.parse()
